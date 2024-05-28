@@ -55,24 +55,29 @@ const schema = new Schema({
 });
 
 schema.statics.paginate = async function ({
-                                            limit = 10, page = 1, sort = -1, where = {}
-                                          }) {
-    const skip = limit * (page - 1)
-    const items = await this.find({...where, parent: null})
+    limit = 10,
+    page = 1,
+    sort = -1,
+    where = {},
+}) {
+    const skip = limit * (page - 1);
+    const items = await this.find({ ...where, parent: null })
         .limit(limit)
         .skip(skip)
-        .sort({createdAt: sort})
-        .populate('user', 'name')
-        .populate('tags', 'name slug')
-        .exec()
+        .sort({ createdAt: sort })
+        .populate("user", "name")
+        .populate("tags", "name slug")
+        .exec();
 
-    const pages = Math.ceil(await this.count({...where, parent: null}).exec() / limit)
+    const pages = Math.ceil(
+        (await this.count({ ...where, parent: null }).exec()) / limit
+    );
 
     return {
-        items, pages
-    }
-
-}
+        items,
+        pages,
+    };
+};
 
 schema.statics.vote = async function (_id, {type, user}) {
     const {n: updated} = await this.updateOne(
