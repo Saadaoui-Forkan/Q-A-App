@@ -70,7 +70,7 @@ schema.statics.paginate = async function ({
         .exec();
 
     const pages = Math.ceil(
-        (await this.count({ ...where, parent: null }).exec()) / limit
+        (await mongoose.model('Post').countDocuments({ ...where, parent: null }).exec()) / limit
     );
 
     return {
